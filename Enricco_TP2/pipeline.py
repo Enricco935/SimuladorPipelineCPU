@@ -1,4 +1,6 @@
 from estagio import Estagio
+from tarefa import Tarefa
+import matplotlib.pyplot as plt
 
 class Pipeline:
     def __init__(self, estagios, tarefas):
@@ -25,13 +27,30 @@ class Pipeline:
 
     def preencher_tarefas(self):
 
-        self.tarefas = list(input("Digite as tarefas: ").upper())
+        tarefas = list(input("Digite as tarefas: ").upper())
 
-        for tarefa in self.tarefas:
+        for tarefa in tarefas:
             if tarefa not in ("A", "B"):
                 raise ValueError("As tarefas devem ser apenas A ou B")
 
-        if len(self.tarefas) > 8:
-            del self.tarefas[8:]
-            print(f"ATENCAO! Foram consideradas apenas 8 tarefas:\n\t{self.tarefas}")
-            
+        if len(tarefas) > 8:
+            del tarefas[8:]
+            print(f"ATENCAO! Foram consideradas apenas 8 tarefas:\n\t{tarefas}")
+
+        for id, tarefa in enumerate(tarefas):
+            self.tarefas.append(Tarefa(id+1, tarefa, self.estagios))
+                      
+    def config(self):
+        colunas =["Estagio", "Duracao", "Recurso Tipo A", "Recurso Tipo B"]
+
+        dados = []
+        for i, estagio in enumerate(self.estagios):
+            dados.append([])
+            dados[i].append(f"{estagio.nome}")
+            dados[i].append(f"{estagio.ciclosConsumidos}")
+            dados[i].append(f"{estagio.recursoUtilizadoA}")
+            dados[i].append(f"{estagio.recursoUtilizadoB}")
+
+        return dados, colunas
+
+
