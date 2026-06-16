@@ -1,6 +1,5 @@
 from estagio import Estagio
 from tarefa import Tarefa
-import matplotlib.pyplot as plt
 
 class Pipeline:
     def __init__(self, estagios, tarefas):
