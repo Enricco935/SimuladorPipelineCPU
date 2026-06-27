@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 def salvar_tabela(dados, colunas, arquivo):
-        fig, ax = plt.subplots(figsize=(12, 2))
+        fig, ax = plt.subplots(figsize=(30, 2))
         ax.axis("off")
 
         tabela = ax.table(

@@ -13,7 +13,7 @@ pipe.preencher_tarefas()
 pipeM = MaquinaSemPipeline(pipe)
 pipeC = MaquinaComPipeline()
 
-dadosConfig, colunasConfig = pipe.config()
+dadosConfig, colunasConfig = pipe.config()#retona dados e colunas pra criar a tabela
 salvar_tabela(dadosConfig, colunasConfig, "configPipeline")
 
 dadosS, colunasS = pipeM.rodar(pipe)

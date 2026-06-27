@@ -8,21 +8,30 @@ class Pipeline:
 
     def configurar_estagios(self):
         
-        qtd = int(input("Quantos estagios quer configurar? "))
+        while True:
+            qtd = int(input("Quantos estagios quer configurar? "))
+            if 0 < qtd < 9:
+                break
+            else:
+                print("Quantidade de estágios deve estar entre 1 e 8!")
+
         for i in range(qtd):
             print(f"=============== ESTAGIO {i+1} ===============")
-            nomeEstagio = input("Nome do Estagio: ")
+            nomeEstagio = input("Nome do Estagio: ").upper()
             ciclosConsumidos = int(input("Quantidade de Ciclos Consumidos: "))
-            recursoUtilizado = input("Recurso Utilizado: ")
+            recursoUtilizado = input("Recurso Utilizado: ").upper()
 
             self.estagios.append(Estagio(nomeEstagio, ciclosConsumidos, recursoUtilizado, recursoUtilizado))
 
         for i,estagio in enumerate(self.estagios):
             print(f"[ {i} ] {estagio.nome}")
+
         idx = int(input('Qual estagio usa dois recursos? (-1 para "Nenhum")'))
-        if 0 <= idx < len(self.estagios):
+        if 0 <= idx < len(self.estagios):# verifica se o indice digitado é valido
             self.estagios[idx].recursoUtilizadoA = input("Recurso do tipo A: ")
             self.estagios[idx].recursoUtilizadoB = input("Recurso do tipo B: ")
+        else: 
+            print("Indice digitado inválido. Considerando que nenhum estágio usa dois recursos.")
 
     def preencher_tarefas(self):
 
@@ -33,8 +42,8 @@ class Pipeline:
                 raise ValueError("As tarefas devem ser apenas A ou B")
 
         if len(tarefas) > 8:
-            del tarefas[8:]
-            print(f"ATENCAO! Foram consideradas apenas 8 tarefas:\n\t{tarefas}")
+            del tarefas[8:] #deleta do indice 8 pra frente
+            print(f"ATENCAO! Foram consideradas apenas as 8 primeiras tarefas:\n\t{tarefas}")
 
         for id, tarefa in enumerate(tarefas):
             self.tarefas.append(Tarefa(id+1, tarefa, self.estagios))

@@ -3,12 +3,7 @@ from pipeline import Pipeline
 def recurso_em_uso(matriz, termo, coluna):
 
     for linha in matriz:
-
-        if coluna >= len(linha):
-            continue
-
         i = coluna
-
         while i >= 0:
 
             if f"({termo})" in linha[i]:
@@ -72,19 +67,19 @@ class MaquinaComPipeline:
 
         for i, tarefa in enumerate(pipeline.tarefas):
             progressoTarefa = i + 1 #ignora a primeira coluna de labels
-            dados.append([])
-            dados[i].append(f"T{tarefa.id}({tarefa.tipo})")
+            dados.append([])#adiciona uma nova linha para a tarefa
+            dados[i].append(f"T{tarefa.id}({tarefa.tipo})")# adiciona o texto na matriz
             
             
-            for j in range(i):
+            for j in range(i):#preenche a parte esquerda ta matriz com vazio, a quantidade depende de onde essa tarefa é inserida
                 dados[i].append(" ")
 
-            for estagio in tarefa.estagios:
+            for id_estagio, estagio in enumerate(tarefa.estagios):
 
                 k = 0
-                if 'A' in tarefa.tipo:
+                if 'A' in tarefa.tipo:#se a tarefa for do tipo A
                     while k < estagio.ciclosConsumidos:
-                        for l in range(i+1):
+                        for l in range(i+1):# percorre todas as linhas adicionando vazio 
                             if len(dados[l]) <= progressoTarefa:
                                 dados[l].append(" ")
 
@@ -92,8 +87,10 @@ class MaquinaComPipeline:
                             dados[i][progressoTarefa] = f"{estagio.nome}({estagio.recursoUtilizadoA})"
                             k += 1
                         else:
-                            dados[i][progressoTarefa] = "ST"
+                            if id_estagio != 0:
+                                dados[i][progressoTarefa] = "ST"
                         progressoTarefa += 1
+
                 else:
                     while k < estagio.ciclosConsumidos:
                         for l in range(i+1):
@@ -104,7 +101,8 @@ class MaquinaComPipeline:
                             dados[i][progressoTarefa] = f"{estagio.nome}({estagio.recursoUtilizadoB})"
                             k += 1
                         else:
-                            dados[i][progressoTarefa] = "ST"
+                            if id_estagio != 0:
+                                dados[i][progressoTarefa] = "ST"
                         progressoTarefa += 1
 
         colunas = ["Tarefa"]
