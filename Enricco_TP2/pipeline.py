@@ -1,6 +1,23 @@
 from estagio import Estagio
 from tarefa import Tarefa
 
+def printar_relatorio(seq_tarefas, qtd_tarefas, tmp_sem_pipeline, tmp_com_pipeline, qtd_stalls, latencia):
+
+    print("=" * 40)
+    print("RELATÓRIO DA SIMULAÇÃO")
+    print("=" * 40)
+
+    print(f"Sequência de tarefas : {"".join(tarefa.tipo for tarefa in seq_tarefas)}")
+    print(f"Quantidade de tarefas: {qtd_tarefas}")
+    print(f"Tempo sem pipeline   : {tmp_sem_pipeline} ciclos")
+    print(f"Tempo com pipeline   : {tmp_com_pipeline} ciclos")
+    print(f"Quantidade de stalls : {qtd_stalls}")
+    print(f"Latência             : {latencia:.2f} ")
+    print(f"Vazão (Throughput)   : {latencia/tmp_com_pipeline:.2f} tarefas/ciclo")
+    print(f"Speedup              : {tmp_sem_pipeline/tmp_com_pipeline:.2f}")
+
+    print("=" * 40)
+
 class Pipeline:
     def __init__(self, estagios, tarefas):
         self.estagios = estagios

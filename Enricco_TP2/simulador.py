@@ -7,14 +7,39 @@ def recurso_em_uso(matriz, termo, coluna):
         while i >= 0:
 
             if f"({termo})" in linha[i]:
-                return True
+                return linha[i], linha[0]
 
             if linha[i] != "ST":
                 break
 
             i -= 1
 
-    return False
+    return None
+
+def tentou_usar(linha):
+    for estagio in linha:
+        if "ST" != estagio:
+            return estagio 
+
+def printar_stall(ciclo, tarefa_usando, estagio_usando, recurso, tarefa_bloqueada, estagio_bloqueado):
+
+    print(f"\nCiclo {ciclo}:")
+    print(f"- {tarefa_usando} usa {estagio_usando}")
+    print(f"- {tarefa_bloqueada} tentaria usar {estagio_bloqueado}")
+    print(f"\nComo o recurso {recurso} já está ocupado:")
+    print(f"- {tarefa_bloqueada} deve esperar;")
+    print("- Stall inserido.")
+
+def printar_estagios_ciclos(matriz):
+    for coluna in range(1,len(matriz[0])):
+
+        print(f"Ciclo {coluna}:")
+        for linha in matriz:
+            if linha[coluna] != " ":
+
+                if "ST" in linha[coluna]:
+                    print()
+                print(f"{linha[0]} -> {linha[coluna]}")
 
 class MaquinaSemPipeline:
     def calcular_tempos(self, pipeline):
@@ -64,14 +89,16 @@ class MaquinaComPipeline:
 
         progressoTarefa = 0
         dados = []
-
+        inicio_ultima_tarefa = 1
+        qtd_stalls = 0
+        
         for i, tarefa in enumerate(pipeline.tarefas):
-            progressoTarefa = i + 1 #ignora a primeira coluna de labels
+            progressoTarefa = inicio_ultima_tarefa #ignora a primeira coluna de labels
             dados.append([])#adiciona uma nova linha para a tarefa
             dados[i].append(f"T{tarefa.id}({tarefa.tipo})")# adiciona o texto na matriz
             
             
-            for j in range(i):#preenche a parte esquerda ta matriz com vazio, a quantidade depende de onde essa tarefa é inserida
+            for j in range(inicio_ultima_tarefa - 1):#preenche a parte esquerda ta matriz com vazio, a quantidade depende de onde essa tarefa é inserida
                 dados[i].append(" ")
 
             for id_estagio, estagio in enumerate(tarefa.estagios):
@@ -83,12 +110,16 @@ class MaquinaComPipeline:
                             if len(dados[l]) <= progressoTarefa:
                                 dados[l].append(" ")
 
-                        if not recurso_em_uso(dados, estagio.recursoUtilizadoA, progressoTarefa):
+                        resultado = recurso_em_uso(dados, estagio.recursoUtilizadoB, progressoTarefa)
+                        if not resultado:
+                            if id_estagio == 0 and k == 0:#se for o primeiro ciclo do primeiro estagio
+                                inicio_ultima_tarefa = progressoTarefa + 1
                             dados[i][progressoTarefa] = f"{estagio.nome}({estagio.recursoUtilizadoA})"
                             k += 1
                         else:
-                            if id_estagio != 0:
-                                dados[i][progressoTarefa] = "ST"
+                            printar_stall(progressoTarefa, resultado[1], resultado[0], estagio.recursoUtilizadoA, dados[i][0], estagio.nome  )
+                            dados[i][progressoTarefa] = "ST"
+                            qtd_stalls += 1
                         progressoTarefa += 1
 
                 else:
@@ -97,16 +128,20 @@ class MaquinaComPipeline:
                             if len(dados[l]) <= progressoTarefa:
                                 dados[l].append(" ")
 
-                        if not recurso_em_uso(dados, estagio.recursoUtilizadoB, progressoTarefa):
+                        resultado = recurso_em_uso(dados, estagio.recursoUtilizadoB, progressoTarefa)
+                        if not resultado:
+                            if id_estagio == 0 and k == 0: #se for o primeiro ciclo do primeiro estagio
+                                inicio_ultima_tarefa = progressoTarefa + 1
                             dados[i][progressoTarefa] = f"{estagio.nome}({estagio.recursoUtilizadoB})"
                             k += 1
                         else:
-                            if id_estagio != 0:
-                                dados[i][progressoTarefa] = "ST"
+                            printar_stall(progressoTarefa, resultado[1], resultado[0], estagio.recursoUtilizadoB, dados[i][0], estagio.nome  )
+                            dados[i][progressoTarefa] = "ST"
+                            qtd_stalls += 1
                         progressoTarefa += 1
 
         colunas = ["Tarefa"]
         for k in range(progressoTarefa):
             colunas.append(f"{k+1}")
 
-        return dados, colunas
+        return dados, colunas, progressoTarefa-1, qtd_stalls

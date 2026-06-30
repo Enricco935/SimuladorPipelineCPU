@@ -1,18 +1,13 @@
 import matplotlib.pyplot as plt
 
+import csv
+
 def salvar_tabela(dados, colunas, arquivo):
-        fig, ax = plt.subplots(figsize=(30, 2))
-        ax.axis("off")
+    with open(f"{arquivo}.csv", "w", newline="", encoding="utf-8") as csvfile:
+        writer = csv.writer(csvfile)
 
-        tabela = ax.table(
-            cellText=dados,
-            colLabels=colunas,
-            loc="center",
-            cellLoc="center"
-        )
+        # Cabeçalho
+        writer.writerow(colunas)
 
-        tabela.auto_set_font_size(False)
-        tabela.set_fontsize(10)
-        tabela.scale(1, 2)
-
-        plt.savefig(f"{arquivo}.png", bbox_inches="tight", dpi=300)
+        # Dados
+        writer.writerows(dados)

@@ -1,5 +1,5 @@
-from pipeline import Pipeline
-from simulador import MaquinaSemPipeline, MaquinaComPipeline
+from pipeline import Pipeline, printar_relatorio
+from simulador import MaquinaSemPipeline, MaquinaComPipeline, printar_estagios_ciclos
 from plot import salvar_tabela
 
 estagios = []
@@ -19,5 +19,8 @@ salvar_tabela(dadosConfig, colunasConfig, "configPipeline")
 dadosS, colunasS = pipeM.rodar(pipe)
 salvar_tabela(dadosS, colunasS, "maquinaSemPipeline")
 
-dadosC, colunasC = pipeC.rodar(pipe)
+dadosC, colunasC, tempoC, qtd_stalls = pipeC.rodar(pipe)
 salvar_tabela(dadosC, colunasC, "maquinaComPipeline")
+
+printar_relatorio(pipe.tarefas, len(pipe.tarefas), pipeM.tempoTotal, tempoC, qtd_stalls, len(pipe.estagios), )
+#printar_estagios_ciclos(dadosC)
