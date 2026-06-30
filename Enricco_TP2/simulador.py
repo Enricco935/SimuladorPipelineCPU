@@ -1,6 +1,6 @@
 from pipeline import Pipeline
 
-def recurso_em_uso(matriz, termo, coluna):
+def recurso_em_uso(matriz, termo, coluna):#Função que verifica se o recurso ja esta sendo utilizado na coluna  
 
     for linha in matriz:
         i = coluna
@@ -42,7 +42,7 @@ def printar_estagios_ciclos(matriz):
                 print(f"{linha[0]} -> {linha[coluna]}")
 
 class MaquinaSemPipeline:
-    def calcular_tempos(self, pipeline):
+    def calcular_tempos(self, pipeline):#Função que calcula o tempo e execução da maquina sem pipeline
         tempoTarefa = 0
 
         for estagio in pipeline.estagios:
@@ -60,11 +60,11 @@ class MaquinaSemPipeline:
         ciclos = 0
 
         dados = []
-        for i, tarefa in enumerate(pipeline.tarefas):
-            dados.append([" "] * (self.tempoTotal+1)) 
-            dados[i][0] = f"T{tarefa.id}({tarefa.tipo})"
+        for i, tarefa in enumerate(pipeline.tarefas):#Para cada tarefa(Intrução) ele faz oque está abaixo
+            dados.append([" "] * (self.tempoTotal+1))#Cria uma linha inteira vazia
+            dados[i][0] = f"T{tarefa.id}({tarefa.tipo})"#Coloca na primeira posicao dessa linha o numero da tarefa que esta sendo feita
 
-            for estagio in tarefa.estagios:
+            for estagio in tarefa.estagios: #Coloca os estagios nas colunas da linha criada
                 if 'A' in tarefa.tipo:
                     for k in range(1, 1 + estagio.ciclosConsumidos):
                         dados[i][ciclos+k] = f"{estagio.nome}({estagio.recursoUtilizadoA})"
@@ -75,7 +75,7 @@ class MaquinaSemPipeline:
                 ciclos += estagio.ciclosConsumidos
 
         colunas = ["Tarefa"]
-        for i in range(1,len(dados[0])):
+        for i in range(1,len(dados[0])):#Aqui adiciona o numero de cada ciclo
             colunas.append(f"{i}")
 
         return dados, colunas
@@ -99,6 +99,7 @@ class MaquinaComPipeline:
             
             
             for j in range(inicio_ultima_tarefa - 1):#preenche a parte esquerda ta matriz com vazio, a quantidade depende de onde essa tarefa é inserida
+
                 dados[i].append(" ")
 
             for id_estagio, estagio in enumerate(tarefa.estagios):
