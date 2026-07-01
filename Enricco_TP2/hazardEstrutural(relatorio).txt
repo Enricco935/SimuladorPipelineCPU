@@ -1,0 +1,13 @@
+========================================
+RELATÓRIO DA SIMULAÇÃO
+========================================
+
+Sequência de tarefas : AAAAAAAA
+Quantidade de tarefas: 8
+Tempo sem pipeline   : 40 ciclos
+Tempo com pipeline   : 18 ciclos
+Quantidade de stalls : 6
+Latência             : 5.00
+Vazão (Throughput)   : 0.44 tarefas/ciclo
+Speedup              : 2.22
+========================================
